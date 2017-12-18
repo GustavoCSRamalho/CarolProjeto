@@ -1,0 +1,59 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.bmuschko:gradle-tomcat-plugin:2.0'
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'war'
+apply plugin: 'com.bmuschko.tomcat'
+
+// JDK version source compatibility
+sourceCompatibility = 1.7
+// project version
+version = '1.0'
+// War file name
+war.baseName = 'jcg-gradle-war-example'
+// Web directory, this overrides the default value "webapp"
+project.webAppDirName = 'WebContent'
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+// Set source directory
+sourceSets {
+        main {
+            java {
+                srcDir 'src'
+            }
+        }
+    }
+
+// dependencies to run on tomcat, are mandatory for tomcat plugin
+dependencies {
+    def tomcatVersion = '7.0.57'
+    tomcat "org.apache.tomcat.embed:tomcat-embed-core:${tomcatVersion}",
+            "org.apache.tomcat.embed:tomcat-embed-logging-juli:${tomcatVersion}"
+    tomcat("org.apache.tomcat.embed:tomcat-embed-jasper:${tomcatVersion}") {
+        exclude group: 'org.eclipse.jdt.core.compiler', module: 'ecj'
+    }
+
+   compile  'org.hibernate:hibernate-core:4.3.6.Final'
+   compile 'javax.servlet:javax.servlet-api:3.1.0'
+   compile 'org.slf4j:slf4j-simple:1.7.7'
+   compile 'org.javassist:javassist:3.15.0-GA'
+   compile 'mysql:mysql-connector-java:5.1.31'
+   compile 'javax.servlet:jstl:1.2'
+}
+
+
+
+// context where tomcat is deployed, by defautl localhost:8080/
+tomcatRun.contextPath = '/'
+tomcatRunWar.contextPath = '/'
